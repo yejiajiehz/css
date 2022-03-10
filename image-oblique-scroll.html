@@ -10,10 +10,10 @@
 
 <body>
   <div class="container">
-    <div class="image"
+    <div class="image left"
       style="background-image:url(https://upload-images.jianshu.io/upload_images/5809200-a99419bb94924e6d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)">
     </div>
-    <div class="image"
+    <div class="image right"
       style="background-image:url(https://upload-images.jianshu.io/upload_images/5809200-736bc3917fe92142.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)">
     </div>
 
@@ -29,8 +29,8 @@
   const isObtuse = angle % 180 > 90;
   const radian = (angle * Math.PI) / 180;
   // 高度和宽度应该自行设置
-  const height = 500;
-  const width = 800;
+  const width = 1240;
+  const height = 698;
 
   // 拖拽的边界
   const range = (width / 4) * (isObtuse ? -1 : 1);
@@ -104,12 +104,12 @@
     });
   }
 
-  autoRun();
+  // autoRun();
   bindDragEvent();
 
   function update() {
     const bottomX = getBottomX()
-    document.querySelector('.container').style = `--topX:${topX};--bottomX:${bottomX};--width:${width};--height:${height};--cursor:${cursor}`
+    document.querySelector('.container').style = `--topX:${topX}px;--bottomX:${bottomX}px;--width:${width}px;--height:${height}px;--cursor:${cursor};--angle:${angle}deg`
   }
 
   update();
@@ -122,16 +122,15 @@
     min-width: 1280px;
     min-height: 720px;
     overflow: auto;
+    margin: 0;
   }
 
   .container {
     overflow: hidden;
     position: relative;
-    width: calc(var(--width) * 1px);
-    height: calc(var(--height) * 1px);
+    width: var(--width);
+    height: var(--height);
     margin: 100px auto;
-
-
   }
 
   .image {
@@ -142,29 +141,22 @@
     background-repeat: no-repeat;
   }
 
-  .image:nth-child(2) {
-    clip-path: polygon(calc(var(--topX) * 1px) 0%,
+  .image.right {
+    clip-path: polygon(var(--topX) 0%,
         100% 0%,
         100% 100%,
-        calc(var(--bottomX) * 1px) 100%);
+        var(--bottomX) 100%);
   }
 
   .scroll-container {
     position: absolute;
-    background: transparent;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    background: red;
 
-    /* 拖拽区域的宽度 */
-    --scroll-width: 20px;
-
-    clip-path: polygon(calc(var(--topX) * 1px - var(--scroll-width)) 0%,
-        calc(var(--topX) * 1px + var(--scroll-width)) 0%,
-        calc(var(--bottomX) * 1px + var(--scroll-width)) 100%,
-        calc(var(--bottomX) * 1px - var(--scroll-width)) 100%);
-
+    transform: rotate(calc(90deg - var(--angle)));
+    width: 20px;
+    left: calc((var(--topX) + var(--bottomX)) / 2);
+    height: 200%;
+    top: -50%;
     cursor: var(--cursor);
 
     z-index: 1;
