@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+
+  <style>
+    html,
+    body {
+      font: menu;
+      min-width: 1280px;
+      min-height: 720px;
+      overflow: auto;
+      margin: 0;
+    }
+
+    .container {
+      overflow: hidden;
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background-image: url(https://upload-images.jianshu.io/upload_images/5809200-a99419bb94924e6d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240);
+      background-size: cover;
+    }
+
+    .svg {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container"></div>
+  <svg class="svg">
+    <mask id="pen-mask">
+      <rect x="0" y="0" width="100%" height="100%" fill="white" />
+      <polyline class="line" stroke="black" stroke-width="100" stroke-linecap="round" fill="none"
+        stroke-linejoin="round" />
+    </mask>
+
+    <rect x="0" y="0" width="100%" height="100%" fill="rgba(0,0,0,0.6)" mask="url(#pen-mask)" />
+  </svg>
+</body>
+
+<script>
+  // 鼠标移动的距离
+  const positions = [];
+
+  function handlerMouseMove(e, cb) {
+    positions.push([e.clientX, e.clientY]);
+    draw();
+    checkDistance(cb);
+  }
+
+  function bindEvent(cb) {
+    const handler = (e) => handlerMouseMove(e, cb);
+    document.addEventListener("mousemove", handler);
+    return () => document.removeEventListener("mousemove", handler);
+  }
+
+  const line = document.querySelector(".line");
+  // 绘制笔画
+  function draw() {
+    line.setAttribute("points", positions.map((p) => p.join(" ")).join(" "));
+  }
+
+  // 计算距离
+  function checkDistance(cb, maxDistance = 2000) {
+    let distance = 0;
+
+    for (let i = 1; i < positions.length; i++) {
+      const prev = positions[i - 1];
+      const current = positions[i];
+      const x = Math.sqrt(
+        Math.pow(prev[0] - current[0], 2) + Math.pow(prev[1] - current[1], 2)
+      );
+      distance += x;
+    }
+
+    if (distance > maxDistance) {
+      cb(distance);
+    }
+  }
+
+  const unbind = bindEvent((distance) => {
+    console.log("超出距离，当前为", distance);
+    unbind();
+  });
+</script>
+
+</html>
