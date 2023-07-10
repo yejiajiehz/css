@@ -92,10 +92,17 @@
     }
   }
 
-  const unbind = bindEvent((distance) => {
-    console.log("超出距离，当前为", distance);
-    unbind();
-  });
+  // 考虑延迟加载，让鼠标不是默认出现在边缘
+  setTimeout(() => {
+    const unbind = bindEvent((distance) => {
+      console.log("超出距离，当前为", distance);
+      // 考虑延迟释放，效果更加自然
+      setTimeout(() => {
+        unbind();
+      }, 1000);
+    });
+  }, 1000);
+
 </script>
 
 </html>

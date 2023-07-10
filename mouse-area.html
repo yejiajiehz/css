@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <style>
+    #selector {
+      display: none;
+      position: absolute;
+      pointer-events: none;
+      border: 2px dashed rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+  </style>
+  <div id="selector">
+    <div id="card"></div>
+
+  </div>
+  <script>
+    let selector = document.getElementById('selector');
+
+    let drawing = false
+    let origin = [0,0];
+    // 鼠标按下时创建框选元素
+    document.addEventListener('mousedown', function(event) {
+      origin = [event.clientX,event.clientY]
+
+      selector.style.left = origin[0] + 'px';
+      selector.style.top = origin[1] + 'px';
+
+      selector.style.width = '0';
+      selector.style.height = '0';
+      selector.style.display = 'block';
+
+      drawing = true;
+
+    })
+
+      // 鼠标移动时更新框选元素的位置和大小
+      function handleMouseMove(event) {
+        if(!drawing) return;
+        const width = Math.abs(event.clientX - origin[0]);
+        const height = Math.abs(event.clientY - origin[1]);
+
+        selector.style.width = width + 'px';
+        selector.style.height =  height + 'px';
+
+        if(event.clientX < origin[0]) {
+          selector.style.left = event.clientX + 'px';
+        }
+        if(event.clientY < origin[1]) {
+          selector.style.top = event.clientY + 'px';
+        }
+      }
+
+      document.addEventListener('mousemove', handleMouseMove);
+
+      // 鼠标松开时选中元素并隐藏框选元素
+      document.addEventListener('mouseup', function() {
+        // document.removeEventListener('mousemove', handleMouseMove);
+        // selector.style.display = 'none';
+        drawing = false;
+      });
+
+  </script>
+
+</html>

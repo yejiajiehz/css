@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>便签</title>
+    <style>
+      a,
+      abbr,
+      acronym,
+      address,
+      applet,
+      article,
+      aside,
+      audio,
+      b,
+      big,
+      blockquote,
+      body,
+      canvas,
+      caption,
+      center,
+      cite,
+      code,
+      dd,
+      del,
+      details,
+      dfn,
+      div,
+      dl,
+      dt,
+      em,
+      embed,
+      fieldset,
+      figcaption,
+      figure,
+      footer,
+      form,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      header,
+      hgroup,
+      html,
+      i,
+      iframe,
+      img,
+      ins,
+      kbd,
+      label,
+      legend,
+      li,
+      mark,
+      menu,
+      nav,
+      object,
+      ol,
+      output,
+      p,
+      pre,
+      q,
+      ruby,
+      s,
+      samp,
+      section,
+      small,
+      span,
+      strike,
+      strong,
+      sub,
+      summary,
+      sup,
+      table,
+      tbody,
+      td,
+      tfoot,
+      th,
+      thead,
+      time,
+      tr,
+      tt,
+      u,
+      ul,
+      var,
+      video {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+      }
+
+      article,
+      aside,
+      details,
+      figcaption,
+      figure,
+      footer,
+      header,
+      hgroup,
+      menu,
+      nav,
+      section {
+        display: block;
+      }
+
+      body {
+        line-height: 1;
+      }
+
+      ol,
+      ul {
+        list-style: none;
+      }
+
+      blockquote,
+      q {
+        quotes: none;
+      }
+
+      blockquote:after,
+      blockquote:before,
+      q:after,
+      q:before {
+        content: "";
+        content: none;
+      }
+
+      table {
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+    </style>
+    <style>
+      html {
+        padding-bottom: 100px;
+      }
+
+      body {
+        font: menu;
+        color: #434343;
+        min-width: 1200px;
+      }
+
+      .header {
+        height: 62px;
+        background: linear-gradient(#716661, #5f5450);
+        border-bottom: 1px #534843 solid;
+        color: #fff;
+        line-height: 62px;
+        font-size: 18px;
+        padding-left: 20px;
+      }
+
+      .flex-container {
+        display: flex;
+      }
+      .flex-container > div {
+        flex: 1;
+        margin: 20px;
+      }
+
+      /* 左侧样式 */
+
+      .edit {
+        background-image: linear-gradient(
+          to bottom,
+          #fffcf7 49px,
+          #eee8e1 49px
+        );
+
+        background-size: 100% 50px;
+
+        box-shadow: 0 0 2px rgba(126, 50, 0, 0.1) inset,
+          0 1px 4px rgba(58, 15, 0, 0.2);
+      }
+
+      .edit::before {
+        content: " ";
+        height: 100%;
+        position: absolute;
+        width: 18px;
+        background-image: linear-gradient(
+          to bottom,
+          #f7f4ef 49px,
+          #eee8e1 49px
+        );
+        background-size: 100% 50px;
+        border-right: 1px solid #eee8e1;
+      }
+
+      .edit-top {
+        padding-right: 30px;
+        line-height: 50px;
+        color: #b9a691;
+        font-size: 16px;
+      }
+
+      .word_number {
+        float: right;
+      }
+
+      /* 输入区域 */
+      .input {
+        border: none;
+        height: auto;
+        width: 100%;
+        background: transparent;
+        padding: 0 30px 50px 50px;
+        line-height: 50px;
+        font-size: 17px;
+        color: #635752;
+        box-sizing: border-box;
+        resize: none;
+      }
+      .input:focus {
+        outline: none;
+      }
+
+      .page-container p {
+        line-height: 45px;
+      }
+
+      /* 预览 */
+      .preview {
+      }
+
+      .page-wrap {
+        position: relative;
+        font-size: 23px;
+        color: #645647;
+        background: #fffcf6;
+        border-top: 1px solid #fffcf6;
+        padding-bottom: 115px;
+        font-family: "PingFang SC", Helvetica, ST-Heiti, "Microsoft Yahei";
+        border-radius: 4px;
+        box-shadow: 0 3px 8px rgba(69, 18, 10, 0.4);
+      }
+
+      .page-border {
+        border: 2px solid #e9e5d9;
+        padding: 2px;
+        margin: 33px 19px 0 19px;
+        position: relative;
+      }
+
+      .page-wrap .wrap-bottom,
+      .page-wrap .wrap-left,
+      .page-wrap .wrap-right,
+      .page-wrap .wrap-top {
+        width: 2px;
+        height: 2px;
+        border: 2px solid #e9e5d9;
+        position: absolute;
+      }
+
+      .page-wrap .wrap-top {
+        top: -6px;
+        left: -6px;
+      }
+
+      .page-wrap .wrap-right {
+        top: -6px;
+        right: -6px;
+      }
+
+      .page-wrap .wrap-bottom {
+        bottom: -6px;
+        right: -6px;
+      }
+
+      .page-wrap .wrap-left {
+        bottom: -6px;
+        left: -6px;
+      }
+
+      .page-wrap .via-copy {
+        background-repeat: no-repeat;
+        background-position: left top;
+        position: absolute;
+        bottom: 78px;
+        left: 31px;
+        height: 24px;
+        width: 500px;
+      }
+
+      .page-container {
+        border: 2px solid #e9e5d9;
+        position: relative;
+        padding: 38px 39px 50px 40px;
+      }
+
+      .markdown h1,
+      .markdown h2,
+      .markdown h3 {
+        font-weight: 400;
+        color: #645647;
+        line-height: 45px;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        margin: 0;
+        word-break: break-all;
+      }
+
+      .markdown h1 {
+        font-size: 30px;
+      }
+
+      .markdown h2 {
+        font-size: 28px;
+      }
+
+      .markdown h3 {
+        font-size: 26px;
+      }
+
+      .markdown p {
+        margin: 0;
+        padding: 0;
+      }
+
+      .markdown blockquote {
+        font-size: 23px;
+        line-height: 40px;
+        margin: 0;
+        padding-left: 38px;
+        position: relative;
+        min-height: 40px;
+        word-break: break-all;
+        color: #b4a08e;
+        background-size: 13px;
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA4hpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTMyIDc5LjE1OTI4NCwgMjAxNi8wNC8xOS0xMzoxMzo0MCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo4MTE5MThmNC1lYjM0LTRmMTAtOThlMS0wNGU5NTczZTVkOGQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MTk1NTJCQzE4NTRGMTFFNkJCNjdCRTNENzMyQzJFNTkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MTk1NTJCQzA4NTRGMTFFNkJCNjdCRTNENzMyQzJFNTkiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUuNSAoTWFjaW50b3NoKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjQzMTkyM2NmLTYyZWEtNDAwNS1iNDg2LTdhYjllNDQ0MjM5OSIgc3RSZWY6ZG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOjkzOTdhMDhkLWE2NjUtMTE3OS1hZWYxLWE1MjY4MTQ3ZGEyNyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PkOrP8kAAADUSURBVHjaYiwJ02CgJmCiUB4dsLDgMEQYirmA+BwBQ5iBWAyIhYCYA91AXiBWAGI2Il0kAMRyQMwKdyKSpBDUMEYiDQO5ShZXGHGTaBgvNsOQXYjNsF9A/AKLHkaoenTwE6QeZKAgKDDRJD8D8V0g/otFoxCWMP4IxPeA+B8T1EBk8Bcq+ReHd4XQ+H+A+D7IMFgY8qApeA9VhAtwYVH/FzlS0JPOFwIJHa96FiyR8Q+aWJGDADlCGPCpx5ZTlND4ZwkkIWVK8irFhcOogcPBQIAAAwA1ph0Za5PfQwAAAABJRU5ErkJggg==);
+        background-repeat: no-repeat;
+        background-position: 0 0;
+      }
+
+      .markdown strong {
+        font-weight: 700;
+      }
+
+      .markdown blockquote:after {
+        width: 1.5px;
+        top: 0;
+        bottom: 0;
+        left: 25px;
+        background-color: transparent;
+        border: 1px solid #dfd6c5;
+        border-top: 0;
+        border-bottom: 0;
+        position: absolute;
+        content: " ";
+        overflow: hidden;
+      }
+
+      .markdown ul {
+        margin-left: 21px;
+        line-height: 45px;
+        min-height: 45px;
+        text-indent: 18px;
+        position: relative;
+        list-style: none;
+        word-break: break-all;
+        font-size: 24px;
+      }
+
+      .markdown ul:after {
+        content: ".";
+        width: 8px;
+        position: absolute;
+        top: 18px;
+        height: 8px;
+        background: #dfd6c5;
+        overflow: hidden;
+        left: 1px;
+        border-radius: 4px;
+      }
+
+      .markdown ol {
+        padding-left: 28px;
+        line-height: 45px;
+        list-style: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">便签（仿锤子便签）</div>
+    <div class="flex-container">
+      <div class="edit" id="edit" style="padding-bottom: 157px">
+        <div class="edit-top">
+          <span class="word_number">共 0 字</span>
+        </div>
+        <div class="edit-con">
+          <textarea id="input" class="input">
+Markdown 是一种使用纯文本编写的标记语言，它可以使便签生成图片或网页时，产生格式丰富的页面排版效果，比如突出标题、加粗、引用和生成列表。
+
+用法与规则：
+
+您可以手动输入 Markdown 符号。
+
+### 标题
+使用“#”加空格在行首来创建标题
+例如：
+# 一级标题
+## 二级标题
+### 三级标题
+
+### 加粗功能
+使用一组星号“**”来加粗一段文字
+
+例如：
+这是**加粗的文字**
+
+### 引用
+使用“>”在段首来引用一段文字
+例如：
+> 这是一段引用
+
+> 这是一段引用
+
+### 无序列表
+使用“-”、“*”或“+”加空格来创建无序列表
+例如：
+- 这是一个无序列表
++ 这是一个无序列表
+* 这是一个无序列表
+
+### 有序列表
+使用数字圆点加空格如“1.”、“2.”来创建有序列表
+例如：
+1. 这是一个有序列表
+2. 这是一个有序列表
+3. 这是一个有序列表
+        </textarea
+          >
+        </div>
+      </div>
+      <div class="preview" id="preview">
+        <div class="page-wrap">
+          <div class="page-border">
+            <div class="wrap-top"></div>
+            <div class="wrap-right"></div>
+            <div class="wrap-bottom"></div>
+            <div class="wrap-left"></div>
+            <div id="page-container" class="page-container markdown"></div>
+          </div>
+          <div class="via-copy">由 XX 便签发送 via XX Notes</div>
+        </div>
+      </div>
+    </div>
+    <script src="
+https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js
+"></script>
+    <script>
+      const md = new markdownit("commonmark");
+      const input = document.getElementById("input");
+
+      let timeid = 0;
+      input.oninput = (e) => {
+        clearTimeout(timeid);
+
+        timeid = setTimeout(() => {
+          console.time("render");
+          render(e.target.value);
+          console.timeEnd("render");
+        }, 100);
+
+        resize(input);
+        count();
+      };
+
+      function count() {
+        document.querySelector(
+          ".word_number"
+        ).textContent = `共 ${input.value.length} 字`;
+      }
+
+      function resize(input) {
+        input.style.height = 0;
+        input.style.height = input.scrollHeight + "px";
+      }
+
+      function render(text) {
+        const result = md.render(text);
+        document.getElementById("page-container").innerHTML = result;
+      }
+
+      render(input.value);
+      resize(input);
+      count();
+    </script>
+  </body>
+</html>

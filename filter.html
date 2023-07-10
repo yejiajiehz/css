@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .bg {
+        height: 100vh;
+        left: 0;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 0;
+      }
+
+      .fire {
+        overflow: visible;
+        scale: 1.4;
+        transform: translate(5%, -9%);
+        filter: blur(0);
+        opacity: 1;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+
+      .fire .image {
+        left: 0;
+        object-fit: contain;
+        pointer-events: none;
+        transition: filter animation 0.3s linear;
+        user-select: none;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        /* animation: image1 5s linear infinite; */
+      }
+
+      @keyframes image1 {
+        0% {
+          filter: hue-rotate(0deg) saturate(1);
+        }
+
+        to {
+          filter: hue-rotate(1turn) saturate(1);
+        }
+      }
+    </style>
+
+    <script>
+      window.addEventListener("mousemove", handleMouseMove);
+      let timeRef = 0;
+      function handleMouseMove(e) {
+        clearTimeout(timeRef);
+        var t = e.clientX / window.innerWidth - 1;
+        document.querySelectorAll(".fire .image").forEach(function (e) {
+          e.style.animationPlayState = "paused";
+          e.style.animationDelay = 5 * t + "s";
+        });
+
+        timeRef = setTimeout(function () {
+          document.querySelectorAll(".fire .image").forEach(function (e) {
+            e.style.animationPlayState = "running";
+          });
+        }, 1500);
+      }
+    </script>
+  </head>
+  <body>
+    <img
+      class="bg"
+      src="https://cdn.dancf.com/fe-assets/20230630/cowtransfer-front-yslad1/dist/img/Background.ef385261.jpeg"
+    />
+    <div class="fire">
+      <img
+        src="https://cdn.dancf.com/fe-assets/20230630/cowtransfer-front-yslad1/dist/img/Selection.62beabe0.png"
+        class="image"
+        style="z-index: 4"
+      /><img
+        src="https://cdn.dancf.com/fe-assets/20230630/cowtransfer-front-yslad1/dist/img/Red-1.fc74f194.png"
+        class="image"
+        style="z-index: 3"
+      /><img
+        src="https://cdn.dancf.com/fe-assets/20230630/cowtransfer-front-yslad1/dist/img/Green.2991b727.png"
+        class="image"
+        style="z-index: 2"
+      /><img
+        src="https://cdn.dancf.com/fe-assets/20230630/cowtransfer-front-yslad1/dist/img/Blue.3301a571.png"
+        class="image"
+        style="z-index: 1"
+      />
+    </div>
+  </body>
+</html>
